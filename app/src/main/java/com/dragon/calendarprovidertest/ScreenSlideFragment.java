@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by specter on 10/24/15.
  */
-public class ScreenSlideFregment extends android.support.v4.app.Fragment{
+public class ScreenSlideFragment extends android.support.v4.app.Fragment{
     RecyclerView recyclerView;
     RecyclerViewDemoAdapter adapter;
     int itemCount;
@@ -57,12 +57,12 @@ public class ScreenSlideFregment extends android.support.v4.app.Fragment{
     private static final int PROJECTION_END_INDEX = 8;
     Calendar nowTime;
     private int page;
-    public static ScreenSlideFregment newInstance(int page) {
-        ScreenSlideFregment screenSlideFregment = new ScreenSlideFregment();
+    public static ScreenSlideFragment newInstance(int page) {
+        ScreenSlideFragment screenSlideFragment = new ScreenSlideFragment();
         Bundle args = new Bundle();
         args.putInt("page",page);
-        screenSlideFregment.setArguments(args);
-        return screenSlideFregment;
+        screenSlideFragment.setArguments(args);
+        return screenSlideFragment;
     }
 
     @Override

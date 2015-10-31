@@ -3,6 +3,7 @@ package com.dragon.calendarprovidertest;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -15,10 +16,9 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity {
 
     FragmentPagerAdapter pagerAdapter;
+    TabLayout tabLayout;
 
 
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 
+        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
     }
 
@@ -64,10 +66,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static class MyPagerAdapter extends FragmentPagerAdapter {
-        private static int NUM_ITEM = 10;
+        private static int NUM_ITEM = 7;
+        private String tabTitles[] = new String[]{"Mon", "Tue ", "Wed", "Thu ", "Fri", "Sat", "Sun"};
 
         public MyPagerAdapter(android.support.v4.app.FragmentManager fm) {
             super(fm);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabTitles[position];
         }
 
         @Override
@@ -77,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return ScreenSlideFregment.newInstance(position);
+            return ScreenSlideFragment.newInstance(position);
         }
     }
 }
