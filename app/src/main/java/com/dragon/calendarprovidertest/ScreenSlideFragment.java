@@ -144,7 +144,7 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment{
             items.add(model);
         }
 
-        adapter = new RecyclerViewDemoAdapter(items);
+        adapter = new RecyclerViewDemoAdapter(getActivity(),items);
         recyclerView.setAdapter(adapter);
 
         TextView showDate = (TextView) rootView.findViewById(R.id.showDate);
