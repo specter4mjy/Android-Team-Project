@@ -15,4 +15,8 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="nav_text_them">
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>

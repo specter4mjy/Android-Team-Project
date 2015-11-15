@@ -1,4 +1,4 @@
-package com.dragon.calendarprovidertest;
+package com.dragon.calendarprovidertest.calendar;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,23 +11,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.dragon.calendarprovidertest.R;
+
 import java.util.List;
 
 /**
  * Created by specter on 10/24/15.
  */
-public class RecyclerViewDemoAdapter extends RecyclerView.Adapter<RecyclerViewDemoAdapter.ListItemViewHolder> {
-    private List<EventModel> events;
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ListItemViewHolder> {
+    private List<EventDataModel> events;
     private SparseBooleanArray selectedItems;
     private Context context;
     private Activity activity;
 
-    public RecyclerViewDemoAdapter(Activity activity,List<EventModel> events) {
+    public RecyclerViewAdapter(Activity activity, List<EventDataModel> events) {
         this.events = events;
         this.activity = activity;
     }
 
-    public void addEvent(EventModel newModelData, int position) {
+    public void addEvent(EventDataModel newModelData, int position) {
         events.add(position, newModelData);
         notifyItemInserted(position);
     }
@@ -38,7 +40,7 @@ public class RecyclerViewDemoAdapter extends RecyclerView.Adapter<RecyclerViewDe
         notifyItemRemoved(position);
     }
 
-    public EventModel getEvent(int position) {
+    public EventDataModel getEvent(int position) {
         return events.get(position);
     }
 
@@ -51,7 +53,7 @@ public class RecyclerViewDemoAdapter extends RecyclerView.Adapter<RecyclerViewDe
 
     @Override
     public void onBindViewHolder(ListItemViewHolder holder, int position) {
-        EventModel model = events.get(position);
+        EventDataModel model = events.get(position);
         holder.label.setText(model.label);
         holder.startTime.setText(model.startTime);
         holder.endTime.setText(model.endTime);
@@ -81,9 +83,9 @@ public class RecyclerViewDemoAdapter extends RecyclerView.Adapter<RecyclerViewDe
         @Override
         public void onClick(View v) {
             int position = getLayoutPosition();
-            EventModel event =events.get(position);
+            EventDataModel event =events.get(position);
 //            Snackbar.make(v, "clicked " +event.label, Snackbar.LENGTH_LONG).show();
-            Intent intent = new Intent(activity, EventDetail.class);
+            Intent intent = new Intent(activity, EventDetailActivity.class);
             intent.putExtra("label", event.label);
             intent.putExtra("startTime", event.startTime);
             intent.putExtra("endTime", event.endTime);

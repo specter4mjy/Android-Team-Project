@@ -1,10 +1,12 @@
-package com.dragon.calendarprovidertest;
+package com.dragon.calendarprovidertest.calendar;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class EventDetail extends AppCompatActivity {
+import com.dragon.calendarprovidertest.R;
+
+public class EventDetailActivity extends AppCompatActivity {
 
     TextView label;
     @Override

@@ -1,4 +1,4 @@
-package com.dragon.calendarprovidertest;
+package com.dragon.calendarprovidertest.calendar;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.dragon.calendarprovidertest.R;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import java.util.List;
  */
 public class ScreenSlideFragment extends android.support.v4.app.Fragment{
     RecyclerView recyclerView;
-    RecyclerViewDemoAdapter adapter;
+    RecyclerViewAdapter adapter;
     int itemCount;
     Context mContext;
 
@@ -119,12 +121,12 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment{
                 null,
                 null, null);
 
-        List<EventModel> items = new ArrayList<>();
+        List<EventDataModel> items = new ArrayList<>();
         while (cursor.moveToNext()) {
             String title = null;
             long beginVal = 0;
             long endVal = 0;
-            EventModel model = new EventModel();
+            EventDataModel model = new EventDataModel();
 
             beginVal = cursor.getLong(PROJECTION_BEGIN_INDEX);
             endVal = cursor.getLong(PROJECTION_END_INDEX);
@@ -144,7 +146,7 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment{
             items.add(model);
         }
 
-        adapter = new RecyclerViewDemoAdapter(getActivity(),items);
+        adapter = new RecyclerViewAdapter(getActivity(),items);
         recyclerView.setAdapter(adapter);
 
         TextView showDate = (TextView) rootView.findViewById(R.id.showDate);

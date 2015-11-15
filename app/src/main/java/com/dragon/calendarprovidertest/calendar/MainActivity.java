@@ -1,21 +1,30 @@
-package com.dragon.calendarprovidertest;
+package com.dragon.calendarprovidertest.calendar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.dragon.calendarprovidertest.EditNameDialog;
+import com.dragon.calendarprovidertest.R;
+import com.dragon.calendarprovidertest.TodoActivity;
+
 public class MainActivity extends AppCompatActivity {
 
-    FragmentPagerAdapter pagerAdapter;
-    TabLayout tabLayout;
+    private FragmentPagerAdapter pagerAdapter;
+    private TabLayout tabLayout;
+    private DrawerLayout mDrawer;
+    private NavigationView nvDrawer;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,35 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        nvDrawer = (NavigationView) findViewById(R.id.nav_view);
+        setupDrawerContent(nvDrawer);
+
+
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                selectDrawerItem(item);
+                return true;
+            }
+        });
+    }
+
+    public void selectDrawerItem(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.nav_calendar:
+                intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_todo:
+                intent = new Intent(this, TodoActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 
     @Override
