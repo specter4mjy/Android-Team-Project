@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -54,9 +55,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(ListItemViewHolder holder, int position) {
         EventDataModel model = events.get(position);
-        holder.label.setText(model.label);
+        holder.label.setText(model.title);
         holder.startTime.setText(model.startTime);
         holder.endTime.setText(model.endTime);
+        if (model.location.equals("") ) {
+            holder.location.setVisibility(View.GONE);
+        } else {
+            holder.location.setText(model.location);
+            holder.location.setVisibility(View.VISIBLE);
+        }
+        holder.cardView.setCardBackgroundColor(model.eventColor);
     }
 
     @Override
@@ -69,11 +77,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView label;
         TextView startTime;
+        TextView location;
         TextView endTime;
+        CardView cardView;
 
         public ListItemViewHolder(View itemView) {
             super(itemView);
+            cardView = (CardView) itemView.findViewById(R.id.card);
             label = (TextView) itemView.findViewById(R.id.txt_label_item);
+            location = (TextView) itemView.findViewById(R.id.txt_label_location);
             startTime= (TextView) itemView.findViewById(R.id.txt_start_time);
             endTime= (TextView) itemView.findViewById(R.id.txt_end_time);
             itemView.setOnClickListener(this);
@@ -84,9 +96,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public void onClick(View v) {
             int position = getLayoutPosition();
             EventDataModel event =events.get(position);
-//            Snackbar.make(v, "clicked " +event.label, Snackbar.LENGTH_LONG).show();
             Intent intent = new Intent(activity, EventDetailActivity.class);
-            intent.putExtra("label", event.label);
+            intent.putExtra("title", event.title);
+            intent.putExtra("location", event.location);
             intent.putExtra("startTime", event.startTime);
             intent.putExtra("endTime", event.endTime);
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, (View) label, "event_title");

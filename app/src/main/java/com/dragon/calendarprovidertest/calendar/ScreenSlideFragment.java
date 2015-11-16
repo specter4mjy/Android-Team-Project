@@ -2,8 +2,8 @@ package com.dragon.calendarprovidertest.calendar;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.dragon.calendarprovidertest.R;
 
@@ -27,11 +26,9 @@ import java.util.List;
 /**
  * Created by specter on 10/24/15.
  */
-public class ScreenSlideFragment extends android.support.v4.app.Fragment{
+public class ScreenSlideFragment extends android.support.v4.app.Fragment {
     RecyclerView recyclerView;
     RecyclerViewAdapter adapter;
-    int itemCount;
-    Context mContext;
 
 
     private static final String DEBUG_TAG = "MyActivity";
@@ -45,7 +42,10 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment{
             CalendarContract.Instances.END_DAY,
             CalendarContract.Instances.DESCRIPTION,
             CalendarContract.Instances.ALL_DAY,
-            CalendarContract.Instances.END
+            CalendarContract.Instances.END,
+            CalendarContract.Instances.EVENT_COLOR,
+            CalendarContract.Instances.EVENT_LOCATION
+
     };
 
     private static final int PROJECTION_ID_INDEX = 0;
@@ -57,12 +57,14 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment{
     private static final int PROJECTION_DESC_INDEX = 6;
     private static final int PROJECTION_ALL_DAY_INDEX = 7;
     private static final int PROJECTION_END_INDEX = 8;
+    private static final int PROJECTION_COLOR_INDEX = 9;
+    private static final int PROJECTION_LOCATION_INDEX = 10;
     Calendar nowTime;
-    private int page;
+
     public static ScreenSlideFragment newInstance(int page) {
         ScreenSlideFragment screenSlideFragment = new ScreenSlideFragment();
         Bundle args = new Bundle();
-        args.putInt("page",page);
+        args.putInt("page", page);
         screenSlideFragment.setArguments(args);
         return screenSlideFragment;
     }
@@ -78,7 +80,6 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment{
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.content_main, container, false);
 
-
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -90,10 +91,11 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment{
 
         DateFormat formatter = new SimpleDateFormat("HH/mm/ss/MM/dd/yyyy");
 
-        page = getArguments().getInt("page");
+        int page = getArguments().getInt("page");
+        Log.i("specter", page + "");
 
-        nowTime= Calendar.getInstance();
-        nowTime.add(Calendar.DATE,page-1);
+        nowTime = Calendar.getInstance();
+        nowTime.add(Calendar.DATE, page - 1);
         Calendar beginTime = nowTime;
         beginTime.set(Calendar.HOUR_OF_DAY, 0);
         beginTime.set(Calendar.MINUTE, 0);
@@ -103,15 +105,13 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment{
 
         Calendar endTime = nowTime;
         endTime.set(Calendar.HOUR_OF_DAY, 23);
-        endTime.set(Calendar.MINUTE,59);
-        endTime.set(Calendar.SECOND,59);
+        endTime.set(Calendar.MINUTE, 59);
+        endTime.set(Calendar.SECOND, 59);
         Log.d(DEBUG_TAG, endTime.getTime().toString());
         Long endMillis = endTime.getTimeInMillis();
 
         Cursor cursor = null;
         ContentResolver cr = getActivity().getContentResolver();
-
-
         Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
         ContentUris.appendId(builder, startMillis);
         ContentUris.appendId(builder, endMillis);
@@ -123,34 +123,40 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment{
 
         List<EventDataModel> items = new ArrayList<>();
         while (cursor.moveToNext()) {
-            String title = null;
-            long beginVal = 0;
-            long endVal = 0;
+            String title;
+            String location;
+            int eventColor;
+            long eventBeginTime = 0;
+            long eventEndTime = 0;
             EventDataModel model = new EventDataModel();
 
-            beginVal = cursor.getLong(PROJECTION_BEGIN_INDEX);
-            endVal = cursor.getLong(PROJECTION_END_INDEX);
+            eventBeginTime = cursor.getLong(PROJECTION_BEGIN_INDEX);
+            eventEndTime = cursor.getLong(PROJECTION_END_INDEX);
             title = cursor.getString(PROJECTION_TITLE_INDEX);
+            location = cursor.getString(PROJECTION_LOCATION_INDEX);
+            eventColor = cursor.getInt(PROJECTION_COLOR_INDEX);
 
 
-            Log.i(DEBUG_TAG, "Event: " + title);
-            model.label=title;
+            model.title = title;
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis((beginVal));
-            Log.i(DEBUG_TAG, "Date: " + formatter.format(calendar.getTime()));
-            model.startTime=formatter.format(calendar.getTime());
-            calendar.setTimeInMillis(endVal);
-            Log.i(DEBUG_TAG, "end Date: " + formatter.format(calendar.getTime()));
-            model.endTime=formatter.format(calendar.getTime());
+            calendar.setTimeInMillis((eventBeginTime));
+            String hour = String.format("%02d", calendar.get(Calendar.HOUR_OF_DAY));
+            String minute = String.format("%02d", calendar.get(Calendar.MINUTE));
+            model.startTime = hour + ":" + minute;
+            calendar.setTimeInMillis(eventEndTime);
+            hour = String.format("%02d", calendar.get(Calendar.HOUR_OF_DAY));
+            minute = String.format("%02d", calendar.get(Calendar.MINUTE));
+            model.endTime = hour + ":" + minute;
+            model.location = location;
+            model.eventColor = eventColor == 0 ? Color.parseColor("#f8ecc2"):eventColor;
+
 
             items.add(model);
         }
 
-        adapter = new RecyclerViewAdapter(getActivity(),items);
+        adapter = new RecyclerViewAdapter(getActivity(), items);
         recyclerView.setAdapter(adapter);
 
-        TextView showDate = (TextView) rootView.findViewById(R.id.showDate);
-        showDate.setText(nowTime.getTime().toString());
         return rootView;
     }
 }

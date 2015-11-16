@@ -11,13 +11,21 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dragon.calendarprovidertest.EditNameDialog;
 import com.dragon.calendarprovidertest.R;
 import com.dragon.calendarprovidertest.TodoActivity;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,13 +33,19 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
-
+    private TextView tb_day_tv;
+    private TextView tb_year_tv;
+    private TextView tb_month_tv;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        tb_day_tv = (TextView) findViewById(R.id.tb__day);
+        tb_year_tv = (TextView) findViewById(R.id.tb_year);
+        tb_month_tv = (TextView) findViewById(R.id.tb__month);
+        setToolbarTitle(0);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -44,6 +58,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final GestureDetector gestureDetector = new GestureDetector(this, new MyGestureDetector());
+        fab.setOnTouchListener(
+                new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return gestureDetector.onTouchEvent(event);
+                    }
+                }
+        );
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
@@ -55,7 +79,57 @@ public class MainActivity extends AppCompatActivity {
         nvDrawer = (NavigationView) findViewById(R.id.nav_view);
         setupDrawerContent(nvDrawer);
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setToolbarTitle(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    private void setToolbarTitle(int position) {
+        tb_year_tv.setText(getYear(position));
+        tb_month_tv.setText(getMonth(position));
+        tb_day_tv.setText(getDay(position));
+    }
+
+
+
+    private String getDay(int position) {
+        Calendar today = Calendar.getInstance();
+        return today.get(Calendar.DAY_OF_MONTH) + position + "";
+    }
+    private String getMonth(int position) {
+        Calendar today = Calendar.getInstance();
+        DateFormat monthFormatter = new SimpleDateFormat("MMMM");
+        return monthFormatter.format(today.getTime());
+    }
+    private String getYear(int position) {
+        Calendar today = Calendar.getInstance();
+        return today.get(Calendar.YEAR) + "";
+    }
+
+    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (e1.getY() - e2.getY() > 200) {
+                Toast.makeText(MainActivity.this, "Up Swipe", Toast.LENGTH_SHORT).show();
+            }
+            else if (e2.getY() - e1.getY() > 200) {
+                Toast.makeText(MainActivity.this, "Down Swipe", Toast.LENGTH_SHORT).show();
+            }
+            return false;
+        }
     }
 
     private void setupDrawerContent(NavigationView navigationView) {

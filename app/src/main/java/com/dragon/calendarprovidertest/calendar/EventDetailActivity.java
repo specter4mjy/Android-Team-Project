@@ -8,13 +8,13 @@ import com.dragon.calendarprovidertest.R;
 
 public class EventDetailActivity extends AppCompatActivity {
 
-    TextView label;
+    TextView title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
 
-        label = (TextView) findViewById(R.id.lbl_event_title);
-        label.setText(getIntent().getExtras().getString("label"));
+        title = (TextView) findViewById(R.id.lbl_event_title);
+        title.setText(getIntent().getExtras().getString("title"));
     }
 }
