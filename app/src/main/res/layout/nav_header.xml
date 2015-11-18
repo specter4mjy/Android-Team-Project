@@ -10,6 +10,7 @@
 
     <ImageView
         android:src="@drawable/nav_head"
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <!--<TextView-->

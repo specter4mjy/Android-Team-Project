@@ -7,5 +7,5 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/recyclerView"
+    android:background="@color/recyclerViewbacground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior" />

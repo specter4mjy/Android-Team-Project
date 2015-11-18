@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dragon.calendarprovidertest.EditNameDialog;
 import com.dragon.calendarprovidertest.R;
 import com.dragon.calendarprovidertest.TodoActivity;
 
@@ -53,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                EditNameDialog editNameDialog = EditNameDialog.newInstance("Some Title");
-                editNameDialog.show(getSupportFragmentManager(), "fragment_edit_name");
             }
         });
 
@@ -122,10 +119,10 @@ public class MainActivity extends AppCompatActivity {
     class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (e1.getY() - e2.getY() > 200) {
+            if (e1.getY() - e2.getY() > 100) {
                 Toast.makeText(MainActivity.this, "Up Swipe", Toast.LENGTH_SHORT).show();
             }
-            else if (e2.getY() - e1.getY() > 200) {
+            else if (e2.getY() - e1.getY() > 100) {
                 Toast.makeText(MainActivity.this, "Down Swipe", Toast.LENGTH_SHORT).show();
             }
             return false;

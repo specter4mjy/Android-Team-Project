@@ -4,19 +4,23 @@
     android:id="@+id/card"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
-    android:layout_margin="6dp"
+    app:cardBackgroundColor="@color/cardViewBackground"
+    android:layout_margin="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
+        android:padding="10dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/txt_start_time"
-            android:textSize="18sp"
+            android:textColor="@color/timeColor"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="3dp"
             android:transitionName="event_start_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -24,15 +28,17 @@
         <TextView
             android:id="@+id/txt_label_item"
             android:gravity="center"
+            android:paddingLeft="20dp"
             android:textStyle="bold"
-            android:textSize="17sp"
+            android:textSize="15sp"
             android:transitionName="event_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/txt_label_location"
-            android:textSize="16sp"
+            android:textSize="13sp"
+            android:paddingLeft="20dp"
             android:gravity="center"
             android:textStyle="italic"
             android:transitionName="event_location"
@@ -41,7 +47,10 @@
 
         <TextView
             android:id="@+id/txt_end_time"
-            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/timeColor"
+            android:layout_marginTop="3dp"
             android:transitionName="event_end_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

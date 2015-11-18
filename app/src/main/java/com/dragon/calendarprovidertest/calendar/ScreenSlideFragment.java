@@ -10,6 +10,7 @@ import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,20 +102,20 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment {
         beginTime.set(Calendar.MINUTE, 0);
         beginTime.set(Calendar.SECOND, 0);
         Log.d(DEBUG_TAG, beginTime.getTime().toString());
-        Long startMillis = beginTime.getTimeInMillis();
+        Long startOfDayMillis = beginTime.getTimeInMillis();
 
         Calendar endTime = nowTime;
         endTime.set(Calendar.HOUR_OF_DAY, 23);
         endTime.set(Calendar.MINUTE, 59);
         endTime.set(Calendar.SECOND, 59);
         Log.d(DEBUG_TAG, endTime.getTime().toString());
-        Long endMillis = endTime.getTimeInMillis();
+        Long endOfDayMillis = endTime.getTimeInMillis();
 
         Cursor cursor = null;
         ContentResolver cr = getActivity().getContentResolver();
         Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
-        ContentUris.appendId(builder, startMillis);
-        ContentUris.appendId(builder, endMillis);
+        ContentUris.appendId(builder, startOfDayMillis);
+        ContentUris.appendId(builder, endOfDayMillis);
 
         cursor = cr.query(builder.build(),
                 INSTANCE_PROJECTION,
@@ -122,13 +123,16 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment {
                 null, null);
 
         List<EventDataModel> items = new ArrayList<>();
+
+        long lastEventEndTime=startOfDayMillis; // 0:00 of the day
+        EventDataModel model = new EventDataModel();
+        long eventBeginTime = 0;
+        long eventEndTime = 0;
         while (cursor.moveToNext()) {
             String title;
             String location;
             int eventColor;
-            long eventBeginTime = 0;
-            long eventEndTime = 0;
-            EventDataModel model = new EventDataModel();
+
 
             eventBeginTime = cursor.getLong(PROJECTION_BEGIN_INDEX);
             eventEndTime = cursor.getLong(PROJECTION_END_INDEX);
@@ -136,26 +140,41 @@ public class ScreenSlideFragment extends android.support.v4.app.Fragment {
             location = cursor.getString(PROJECTION_LOCATION_INDEX);
             eventColor = cursor.getInt(PROJECTION_COLOR_INDEX);
 
+            model = new EventDataModel();
+
 
             model.title = title;
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis((eventBeginTime));
             String hour = String.format("%02d", calendar.get(Calendar.HOUR_OF_DAY));
             String minute = String.format("%02d", calendar.get(Calendar.MINUTE));
-            model.startTime = hour + ":" + minute;
+            model.startTime = hour + " : " + minute;
             calendar.setTimeInMillis(eventEndTime);
             hour = String.format("%02d", calendar.get(Calendar.HOUR_OF_DAY));
             minute = String.format("%02d", calendar.get(Calendar.MINUTE));
-            model.endTime = hour + ":" + minute;
+            model.endTime = hour + " : " + minute;
             model.location = location;
-            model.eventColor = eventColor == 0 ? Color.parseColor("#f8ecc2"):eventColor;
+            model.eventColor = eventColor == 0 ? Color.parseColor("#555555"):eventColor;
 
-
+            if (eventBeginTime > lastEventEndTime) {
+                EventDataModel addModel = new EventDataModel();
+                addModel.addIcon = true;
+                items.add(addModel);
+            }
+            lastEventEndTime = eventEndTime;
+            model.addIcon = false;
             items.add(model);
         }
-
+        if (eventEndTime < endOfDayMillis) {
+            EventDataModel addModel = new EventDataModel();
+            addModel.addIcon = true;
+            items.add(addModel);
+        }
         adapter = new RecyclerViewAdapter(getActivity(), items);
         recyclerView.setAdapter(adapter);
+        ItemTouchHelper.Callback callback = adapter.new SwipeTouchHelper();
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         return rootView;
     }

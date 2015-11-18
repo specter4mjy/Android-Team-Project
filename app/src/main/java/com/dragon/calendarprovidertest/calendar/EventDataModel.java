@@ -9,5 +9,6 @@ public class EventDataModel {
     String endTime;
     String location;
     int eventColor;
+    boolean addIcon;
 
 }
